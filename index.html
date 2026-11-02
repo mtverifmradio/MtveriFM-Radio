@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mtveri FM Radio</title>
-<meta name="description" content="Sounds from the dust. Live radio, show archive and guests.">
+<meta name="description" content="Tbilisi-based electronic music radio. Live broadcasts and DJ sessions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Noto+Sans+Georgian:wght@400;700&display=swap" rel="stylesheet">
@@ -62,6 +62,17 @@ h2{font-weight:900;font-stretch:75%;font-size:2.2rem;line-height:1;margin-bottom
 .guests button:hover{color:var(--live)}
 .guests sup{font-size:.9rem;font-weight:600;color:var(--mute);margin-left:.15rem}
 
+/* schedule + about */
+.jump{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;margin-top:1.5rem;font-weight:700}
+.sched{list-style:none;padding:0}
+.sched li{display:grid;grid-template-columns:7rem 1fr auto;gap:1rem;align-items:baseline;padding:.9rem 0;border-top:1px solid var(--ink)}
+.sched li:last-child{border-bottom:1px solid var(--ink)}
+.sched .n{font-weight:800;font-size:1.25rem}
+.sched .w,.sched .tm{color:var(--mute)}
+.note{color:var(--mute);margin-top:1rem}
+.about{max-width:62ch}
+.about p+p{margin-top:1rem}
+
 footer{padding:2.5rem 1.25rem 4rem;display:flex;flex-wrap:wrap;gap:.5rem 2rem;font-weight:700}
 </style>
 </head>
@@ -78,9 +89,21 @@ footer{padding:2.5rem 1.25rem 4rem;display:flex;flex-wrap:wrap;gap:.5rem 2rem;fo
 
 <main id="top">
   <div class="hero">
-    <h1>Sounds from the dust</h1>
-    <p>Mtveri FM is a radio station. Press play to listen live, or dig through past shows below.</p>
+    <h1>Sounds in the dust</h1>
+    <p>Tbilisi-based electronic music radio. Live broadcasts and DJ sessions. Press play to listen live.</p>
+    <nav class="jump" aria-label="Sections"><a href="#schedule">Schedule</a><a href="#archive">Archive</a><a href="#guests">Guests</a><a href="#about">About</a></nav>
   </div>
+
+  <section id="schedule">
+    <h2>Schedule</h2>
+    <ul class="sched">
+      <li><span class="w">Tuesday</span><span class="n">Groove Mix Sessions</span><span class="tm">8:00 PM</span></li>
+      <li><span class="w">Thursday</span><span class="n">Guest Mix</span><span class="tm">8:00 PM</span></li>
+      <li><span class="w">Saturday</span><span class="n">Vinyl Sessions</span><span class="tm">2:00 PM</span></li>
+      <li><span class="w">Sunday</span><span class="n">Spotify Weekly</span><span class="tm">12:00 PM</span></li>
+    </ul>
+    <p class="note">All times are Georgia time (GET). Groove Mix Sessions airs monthly.</p>
+  </section>
 
   <section id="archive">
     <h2>Archive</h2>
@@ -92,9 +115,20 @@ footer{padding:2.5rem 1.25rem 4rem;display:flex;flex-wrap:wrap;gap:.5rem 2rem;fo
     <h2>Guests</h2>
     <ul class="guests" id="guestlist"></ul>
   </section>
+
+  <section id="about">
+    <h2>About</h2>
+    <div class="about">
+      <p>Mtveri FM is an independent electronic music radio based in Tbilisi, with live broadcasts and DJ sessions. Erekle, its founder, is a music selector and record collector from Tbilisi, Georgia.</p>
+      <p>His connection with music started in early childhood, listening to his favorite rock bands on a reel-to-reel tape recorder, which shaped his listening culture. He was introduced to electronic music in 2000, when a friend gave him the Matt Darey Pure Euphoria CD compilation. After listening to it, he realized this music was for him, and a new stage of musical development began.</p>
+      <p>He got into the golden age of progressive house and trance during the 2000s, listened to many radio shows, went to clubs and critically evaluated DJ mixes. In 2004, Âme’s Mifune / Shiro EP and their self-titled album, released on Sonar Kollektiv, became his first steps into house and deep house.</p>
+      <p>This continued for years as a listener, collector and audiophile, but he lived, felt and searched like a DJ. After regularly playing at closed parties for friends, he recorded his first mix, Groove Mix 01, and uploaded it to Mixcloud. Today he is the author of the radio shows Vinyl Sessions, Spotify Weekly and Groove Mix Sessions.</p>
+    </div>
+  </section>
 </main>
 
 <footer>
+  <a href="https://www.mixcloud.com/live/mtverifm/">Live on Mixcloud</a>
   <a href="https://www.mixcloud.com/mtverifm/">Mixcloud</a>
   <a href="https://soundcloud.com/mtverifm">SoundCloud</a>
   <a href="https://www.youtube.com/@mtverifm">YouTube</a>
