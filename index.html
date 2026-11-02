@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mtveri FM Radio</title>
+<meta name="description" content="Sounds from the dust. Live radio, show archive and guests.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Noto+Sans+Georgian:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#e6e2da;--ink:#161412;--mute:#6f685f;--live:#2f4bff}
+@media (prefers-color-scheme:dark){:root{--paper:#161412;--ink:#e6e2da;--mute:#9b9388;--live:#6f86ff}}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:"Archivo","Noto Sans Georgian",system-ui,sans-serif;font-size:1rem;line-height:1.5;padding-top:64px}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--live);outline-offset:2px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* live bar */
+.bar{position:fixed;inset:0 0 auto 0;height:64px;display:flex;align-items:center;gap:1rem;padding:0 1.25rem;background:var(--paper);border-bottom:2px solid var(--ink);z-index:10}
+.bar .name{font-weight:900;font-stretch:75%;font-size:1.5rem;letter-spacing:-.01em;text-decoration:none}
+.play{width:42px;height:42px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;flex:none}
+.play svg{width:16px;height:16px;fill:currentColor}
+.np{min-width:0;flex:1;display:flex;align-items:center;gap:.6rem}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--mute);flex:none}
+.on .dot{background:var(--live)}
+@media (prefers-reduced-motion:no-preference){.on .dot{animation:pulse 1.6s ease-in-out infinite}}
+@keyframes pulse{50%{opacity:.25}}
+.np span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.vol{width:90px;accent-color:var(--ink)}
+@media (max-width:640px){.vol{display:none}}
+
+/* hero */
+.hero{padding:4rem 1.25rem 3rem;border-bottom:2px solid var(--ink)}
+.hero h1{font-weight:900;font-stretch:62%;font-size:clamp(3.5rem,17vw,15rem);line-height:.86;letter-spacing:-.02em}
+.hero p{margin-top:1.5rem;max-width:34ch;font-size:1.15rem}
+
+/* sections */
+section{padding:2.5rem 1.25rem;border-bottom:2px solid var(--ink)}
+h2{font-weight:900;font-stretch:75%;font-size:2.2rem;line-height:1;margin-bottom:1.25rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.chip{border:2px solid var(--ink);border-radius:999px;padding:.2rem .85rem;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+/* archive */
+.show{border-top:1px solid var(--ink)}
+.show:last-child{border-bottom:1px solid var(--ink)}
+.row{width:100%;display:grid;grid-template-columns:7.5rem 1fr 1fr 5rem;gap:1rem;align-items:baseline;text-align:left;padding:1rem 0}
+.row:hover .t{text-decoration:underline;text-underline-offset:4px}
+.d,.g{color:var(--mute)}
+.t{font-weight:800;font-size:1.25rem}
+.go{text-align:right;font-weight:700}
+.player{padding:0 0 1.25rem}
+.player iframe{width:100%;height:120px;border:0}
+@media (max-width:700px){.row{grid-template-columns:1fr auto;gap:.15rem 1rem}.d,.g{grid-column:1}.go{grid-row:1;grid-column:2}}
+
+/* guests */
+.guests{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.4rem 1.5rem}
+.guests button{font-weight:900;font-stretch:75%;font-size:clamp(1.6rem,5vw,3rem);line-height:1.1}
+.guests button:hover{color:var(--live)}
+.guests sup{font-size:.9rem;font-weight:600;color:var(--mute);margin-left:.15rem}
+
+footer{padding:2.5rem 1.25rem 4rem;display:flex;flex-wrap:wrap;gap:.5rem 2rem;font-weight:700}
+</style>
+</head>
+<body>
+
+<header class="bar" id="bar">
+  <a class="name" href="#top">Mtveri FM</a>
+  <button class="play" id="play" aria-label="Play live radio">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path id="ico" d="M3 1.5v13l11-6.5z"/></svg>
+  </button>
+  <div class="np"><i class="dot"></i><span id="now">Live radio</span></div>
+  <input class="vol" id="vol" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
+</header>
+
+<main id="top">
+  <div class="hero">
+    <h1>Sounds from the dust</h1>
+    <p>Mtveri FM is a radio station. Press play to listen live, or dig through past shows below.</p>
+  </div>
+
+  <section id="archive">
+    <h2>Archive</h2>
+    <div class="chips" id="chips" aria-label="Filter by guest"></div>
+    <div id="shows"></div>
+  </section>
+
+  <section id="guests">
+    <h2>Guests</h2>
+    <ul class="guests" id="guestlist"></ul>
+  </section>
+</main>
+
+<footer>
+  <a href="https://www.mixcloud.com/mtverifm/">Mixcloud</a>
+  <a href="https://soundcloud.com/mtverifm">SoundCloud</a>
+  <a href="https://www.youtube.com/@mtverifm">YouTube</a>
+  <a href="https://www.instagram.com/mtverifm/">Instagram</a>
+  <a href="https://linktr.ee/mtverifm">Linktree</a>
+</footer>
+
+<script>
+/* ---- EDIT HERE ---------------------------------------------------
+   One entry per show. "mixcloud" is the path after mixcloud.com
+   e.g. https://www.mixcloud.com/mtverifm/my-show/  ->  "/mtverifm/my-show/"
+   Guests appear on the Guests list automatically.
+   The three entries below are placeholders: replace them with real shows. */
+const SHOWS = [
+  { date: "2026-10-28", title: "Replace with show title", guests: ["Guest One"], mixcloud: "/mtverifm/replace-me-1/" },
+  { date: "2026-10-21", title: "Replace with show title", guests: ["Guest Two", "Guest One"], mixcloud: "/mtverifm/replace-me-2/" },
+  { date: "2026-10-14", title: "Replace with show title", guests: [], mixcloud: "/mtverifm/replace-me-3/" }
+];
+const STREAM = "https://stream.laut.fm/mtverifmradio";
+const NOWPLAYING = "https://api.laut.fm/station/mtverifmradio/current_song";
+/* ------------------------------------------------------------------ */
+
+const $ = id => document.getElementById(id);
+const el = (tag, props = {}, kids = []) => { const n = Object.assign(document.createElement(tag), props); kids.forEach(k => n.append(k)); return n; };
+
+/* live player */
+const audio = new Audio();
+audio.volume = 0.8;
+let live = false, track = "Live radio";
+const ICON_PLAY = "M3 1.5v13l11-6.5z", ICON_STOP = "M3 2h4v12H3zM9 2h4v12H9z";
+
+function setLive(on) {
+  live = on;
+  $("bar").classList.toggle("on", on);
+  $("ico").setAttribute("d", on ? ICON_STOP : ICON_PLAY);
+  $("play").setAttribute("aria-label", on ? "Pause live radio" : "Play live radio");
+}
+$("play").onclick = () => {
+  if (live) { audio.pause(); audio.removeAttribute("src"); audio.load(); setLive(false); return; }
+  audio.src = STREAM;
+  audio.play().then(() => setLive(true)).catch(() => { $("now").textContent = "Stream is offline. Try again soon."; });
+};
+$("vol").oninput = e => { audio.volume = e.target.value; };
+audio.onerror = () => { if (live) { setLive(false); $("now").textContent = "Stream is offline. Try again soon."; } };
+
+async function nowPlaying() {
+  try {
+    const d = await (await fetch(NOWPLAYING)).json();
+    const artist = d.artist && d.artist.name ? d.artist.name : (d.artist || "");
+    track = [artist, d.title].filter(Boolean).join(" – ") || "Live radio";
+    $("now").textContent = track;
+  } catch (e) { /* keep the last text */ }
+}
+nowPlaying();
+setInterval(nowPlaying, 20000);
+
+/* archive + guests */
+let filter = null;
+const fmt = iso => new Date(iso + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+function renderShows() {
+  const box = $("shows");
+  box.replaceChildren();
+  SHOWS.filter(s => !filter || s.guests.includes(filter)).forEach(s => {
+    const player = el("div", { className: "player", hidden: true });
+    const go = el("span", { className: "go", textContent: "Listen" });
+    const row = el("button", { className: "row", type: "button", ariaExpanded: "false" }, [
+      el("span", { className: "d", textContent: fmt(s.date) }),
+      el("span", { className: "t", textContent: s.title }),
+      el("span", { className: "g", textContent: s.guests.join(", ") }),
+      go
+    ]);
+    row.onclick = () => {
+      const open = player.hidden;
+      if (open && !player.firstChild) {
+        player.append(el("iframe", {
+          title: s.title, loading: "lazy",
+          src: "https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&feed=" + encodeURIComponent(s.mixcloud)
+        }));
+      }
+      player.hidden = !open;
+      row.setAttribute("aria-expanded", open);
+      go.textContent = open ? "Close" : "Listen";
+    };
+    box.append(el("div", { className: "show" }, [row, player]));
+  });
+}
+
+function renderGuests() {
+  const counts = {};
+  SHOWS.forEach(s => s.guests.forEach(g => counts[g] = (counts[g] || 0) + 1));
+  const names = Object.keys(counts).sort((a, b) => a.localeCompare(b));
+
+  const chips = $("chips");
+  chips.replaceChildren();
+  [null, ...names].forEach(n => {
+    const b = el("button", { className: "chip", type: "button", textContent: n || "All shows" });
+    b.setAttribute("aria-pressed", String(filter === n));
+    b.onclick = () => setFilter(n);
+    chips.append(b);
+  });
+
+  const list = $("guestlist");
+  list.replaceChildren();
+  names.forEach(n => {
+    const b = el("button", { type: "button" }, [n, el("sup", { textContent: counts[n] })]);
+    b.onclick = () => { setFilter(n); $("archive").scrollIntoView(); };
+    list.append(el("li", {}, [b]));
+  });
+}
+
+function setFilter(n) { filter = n; renderShows(); renderGuests(); }
+renderShows();
+renderGuests();
+</script>
+</body>
+</html>
